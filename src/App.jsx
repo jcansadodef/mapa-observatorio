@@ -13,7 +13,7 @@ const LAYER_CONFIG = {
     source: "reintegracoes",
     label: "Reintegrações da Unidade Cível Central",
     color: "#d73027",
-    file: "/reintegracoes.geojson",
+    file: `${import.meta.env.BASE_URL}reintegracoes.geojson`,
   },
 
   fundiarias_fazenda: {
@@ -21,7 +21,7 @@ const LAYER_CONFIG = {
     source: "fundiarias_fazenda",
     label: "Fundiárias Fazenda Pública",
     color: "#fdae61",
-    file: "/fundiarias_fazenda.geojson",
+    file: `${import.meta.env.BASE_URL}fundiarias_fazenda.geojson`,
   },
 
   retrofit: {
@@ -29,7 +29,7 @@ const LAYER_CONFIG = {
     source: "retrofit",
     label: "Retrofit SEHAB",
     color: "#4575b4",
-    file: "/retrofit.geojson",
+    file: `${import.meta.env.BASE_URL}retrofit.geojson`,
   },
 };
 
@@ -287,7 +287,7 @@ export default function App() {
           }}
         >
           <img
-            src="/obs_logo.png"
+            src={`${import.meta.env.BASE_URL}obs_logo.png`}
             alt="Logo"
             style={{
               maxWidth: "210px",

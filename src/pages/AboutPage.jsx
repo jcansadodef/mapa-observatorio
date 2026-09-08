@@ -1,3 +1,4 @@
+import CloseButton from "../components/CloseButton";
 export default function AboutPage({
   onClose,
 }) {
@@ -70,20 +71,7 @@ export default function AboutPage({
             Observatório das Comunidades
           </h2>
 
-          <button
-            onClick={onClose}
-            style={{
-              border: "none",
-
-              background: "none",
-
-              fontSize: "20px",
-
-              cursor: "pointer",
-            }}
-          >
-            ✕
-          </button>
+        <CloseButton onClick={onClose} />
         </div>
 
         {/* CONTENT */}
@@ -94,12 +82,10 @@ export default function AboutPage({
             color: "#444",
           }}
         >
-          O Observatório das Comunidades é um espaço institucional 
-          da Defensoria Pública do Estado de São Paulo dedicado ao 
-          acolhimento, análise e encaminhamento de demandas coletivas 
-          provenientes de comunidades urbanas da capital.
-        </p>
-      </div>
+         O Observatório das Comunidades é um espaço institucional da Defensoria Pública do Estado de São Paulo dedicado ao acolhimento, análise e encaminhamento de demandas coletivas provenientes de comunidades urbanas da capital.
+
+      </p>
+      </div> 
     </>
   );
 }

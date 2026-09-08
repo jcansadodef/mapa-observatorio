@@ -1,10 +1,28 @@
-import LAYER_CONFIG from "./layerConfig";
+import { useState } from "react";
+
+import LAYER_CONFIG, { LAYER_GROUPS } from "./layerConfig";
 
 export default function Sidebar({
   layers,
   setLayers,
   openPage,
+  openForm,
 }) {
+  const [sidebarOpen, setSidebarOpen] =
+    useState(true);
+
+  // Tracks which accordion sections are expanded.
+  // Starts with all groups closed; flip to `true` for any group
+  // you want open by default (e.g. { ZONEAMENTO: true }).
+  const [openGroups, setOpenGroups] = useState({});
+
+  const toggleGroup = (label) => {
+    setOpenGroups((prev) => ({
+      ...prev,
+      [label]: !prev[label],
+    }));
+  };
+
   const handleLayerChange = (
     key,
     checked
@@ -16,117 +34,16 @@ export default function Sidebar({
     }));
   };
 
-  return (
-    <div
-      style={{
-        position: "absolute",
+  const renderLayerRow = (key) => {
+    const config = LAYER_CONFIG[key];
+    if (!config) return null;
 
-        top: 15,
-        left: 15,
-
-        zIndex: 10,
-
-        width: "270px",
-
-        backgroundColor: "white",
-
-        padding: "16px",
-
-        borderRadius: "14px",
-
-        boxShadow:
-          "0 8px 24px rgba(0,0,0,0.15)",
-      }}
-    >
-      {/* LOGO */}
-
-      <div
-        style={{
-          marginBottom: "10px",
-
-          textAlign: "center",
-        }}
-      >
-        <img
-          src={`${import.meta.env.BASE_URL}obs_logo.png`}
-          alt="Logo"
-          style={{
-            maxWidth: "210px",
-          }}
-        />
-      </div>
-
-      {/* TITLE */}
-
-      <h3
-        style={{
-          margin: "5px 0",
-          color: "#222",
-          textAlign: 'center',
-          fontSize: "18px",
-        }}
-      >
-        MAPA INTERATIVO
-      </h3>
-
-      {/* DESCRIPTION */}
-
-      <p
-        style={{
-          fontSize: "13px",
-          textAlign: 'center',
-          color: "#222",
-
-          lineHeight: 1.5,
-        }}
-      >
-        Ative ou desative as camadas
-        de visualização abaixo.
-      </p>
-
-      {/* DIVIDER 
-
-      <hr
-        style={{
-          border: "none",
-
-          height: "3px",
-
-          background:
-            "linear-gradient(to right, #ffc420, #f04434)",
-
-          borderRadius: "999px",
-
-          margin: "10px 0",
-        }}
-      />*/}
-
-
-      {/* LAYER CONTROLS */}
-
-      <div
-        style={{
-          display: "flex",
-
-          flexDirection: "column",
-
-          gap: "14px",
-        }}
-      >
-        
-{Object.entries(LAYER_CONFIG).map(
-  ([key, config]) => {
-    const layerType =
-      config.style.type;
+    const layerType = config.style.type;
 
     const color =
       layerType === "circle"
-        ? config.style.paint[
-            "circle-color"
-          ]
-        : config.style.paint[
-            "fill-color"
-          ];
+        ? config.style.paint["circle-color"]
+        : config.style.paint["fill-color"];
 
     return (
       <label
@@ -161,30 +78,17 @@ export default function Sidebar({
 
         <div
           style={{
-            width:
-              layerType === "fill"
-                ? "18px"
-                : "10px",
+            width: layerType === "fill" ? "18px" : "10px",
 
-            height:
-              layerType === "fill"
-                ? "12px"
-                : "10px",
+            height: layerType === "fill" ? "12px" : "10px",
 
-            borderRadius:
-              layerType === "fill"
-                ? "3px"
-                : "50%",
+            borderRadius: layerType === "fill" ? "3px" : "50%",
 
             border: `2px solid ${color}`,
 
-            backgroundColor:
-              layers[key]
-                ? color
-                : "transparent",
+            backgroundColor: layers[key] ? color : "transparent",
 
-            transition:
-              "all 0.2s ease",
+            transition: "all 0.2s ease",
           }}
         />
 
@@ -203,35 +107,281 @@ export default function Sidebar({
         </span>
       </label>
     );
-  }
-)}
-      </div>
+  };
 
-      {/* DIVIDER */}
+  return (
+    <div
+      style={{
+        position: "absolute",
 
-        <hr
-          style={{
-            border: "none",
+        top: 15,
 
-            height: "3px",
+        /* ✅ keep small visible tab */
+        left: sidebarOpen ? 15 : -277,
 
-            background:
-              "linear-gradient(to right, #9ecd45, #f47431)",
+        zIndex: 10,
 
-            borderRadius: "999px",
+        width: "270px",
 
-            margin: "10px 0",
-          }}
-        />
-      
-      {/* MENU BUTTON */}
+        backgroundColor: "white",
+
+        padding: "16px",
+
+        borderRadius: "14px",
+
+        boxShadow:
+          "0 8px 24px rgba(0,0,0,0.15)",
+
+        fontFamily:
+          "Inter, Arial, sans-serif",
+
+        transition: "left 0.3s ease",
+      }}
+    >
+      {/* =====================================
+          TOGGLE BUTTON
+      ===================================== */}
 
       <button
-        onClick={() => openPage("about")}
+        onClick={() =>
+          setSidebarOpen(!sidebarOpen)
+        }
+        style={{
+          position: "absolute",
+
+          top: "20px",
+
+          left: "100%",
+          marginLeft: "10px",
+
+          width: "36px",
+
+          height: "36px",
+
+          borderRadius: "50%",
+
+          border: "none",
+
+          background: "white",
+
+          boxShadow:
+            "0 4px 10px rgba(0,0,0,0.15)",
+
+          cursor: "pointer",
+
+          display: "flex",
+
+          alignItems: "center",
+
+          justifyContent: "center",
+
+          fontSize: "20px",
+
+          fontWeight: "bold",
+
+          color: "#444",
+        }}
+      >
+        {sidebarOpen ? "◄" : "►"}
+      </button>
+
+      {/* =====================================
+          LOGO
+      ===================================== */}
+
+      <div
+        style={{
+          marginBottom: "10px",
+
+          textAlign: "center",
+        }}
+      >
+        <img
+          src={`${import.meta.env.BASE_URL}obs_logo.png`}
+          alt="Logo"
+          style={{
+            maxWidth: "210px",
+          }}
+        />
+      </div>
+
+      {/* =====================================
+          TITLE
+      ===================================== */}
+
+      <h3
+        style={{
+          margin: "5px 0",
+
+          color: "#222",
+
+          textAlign: "center",
+
+          fontSize: "18px",
+        }}
+      >
+        MAPA INTERATIVO
+      </h3>
+
+      {/* =====================================
+          DESCRIPTION
+      ===================================== */}
+
+      <p
+        style={{
+          fontSize: "13px",
+
+          textAlign: "center",
+
+          color: "#222",
+
+          lineHeight: 1.5,
+        }}
+      >
+        Ative ou desative as camadas
+        de visualização abaixo.
+      </p>
+
+      {/* =====================================
+          LAYER CONTROLS (ACCORDION)
+      ===================================== */}
+
+      <div
+        style={{
+          display: "flex",
+
+          flexDirection: "column",
+
+          gap: "8px",
+        }}
+      >
+        {LAYER_GROUPS.map((group) => {
+          const isOpen = !!openGroups[group.label];
+
+          return (
+            <div key={group.label}>
+              {/* GROUP HEADER */}
+              <button
+                onClick={() => toggleGroup(group.label)}
+                style={{
+                  width: "100%",
+
+                  display: "flex",
+
+                  alignItems: "center",
+
+                  justifyContent: "space-between",
+
+                  padding: "8px 10px",
+
+                  border: "none",
+
+                  borderRadius: "8px",
+
+                  background: "#f4f4f4",
+
+                  cursor: "pointer",
+
+                  fontSize: "13px",
+
+                  fontWeight: 700,
+
+                  color: "#222",
+                }}
+              >
+                <span>{group.label}</span>
+                <span
+                  style={{
+                    fontSize: "12px",
+                    transform: isOpen
+                      ? "rotate(180deg)"
+                      : "rotate(0deg)",
+                    transition: "transform 0.2s ease",
+                  }}
+                >
+                  ▼
+                </span>
+              </button>
+
+              {/* GROUP CONTENT */}
+              {isOpen && (
+                <div
+                  style={{
+                    display: "flex",
+
+                    flexDirection: "column",
+
+                    gap: "10px",
+
+                    padding: "10px 6px 4px 6px",
+                  }}
+                >
+                  {group.layers.map((key) => renderLayerRow(key))}
+                </div>
+              )}
+            </div>
+          );
+        })}
+      </div>
+
+      {/* =====================================
+          DIVIDER
+      ===================================== */}
+
+      <hr
+        style={{
+          border: "none",
+
+          height: "3px",
+
+          background:
+            "linear-gradient(to right, #9ecd45, #f47431)",
+
+          borderRadius: "999px",
+
+          margin: "14px 0",
+        }}
+      />
+
+      {/* =====================================
+          FORM BUTTON
+      ===================================== */}
+
+      <button
+        onClick={openForm}
         style={{
           width: "100%",
 
-        //   marginBottom: "16px",
+          marginBottom: "10px",
+
+          padding: "10px",
+
+          border: "none",
+
+          borderRadius: "10px",
+
+          background: "#9ecd45",
+
+          color: "white",
+
+          fontWeight: "bold",
+
+          cursor: "pointer",
+        }}
+      >
+        GUIA DE ATUAÇÃO
+      </button>
+
+      {/* =====================================
+          ABOUT BUTTON
+      ===================================== */}
+
+      <button
+        onClick={() =>
+          openPage("about")
+        }
+        style={{
+          width: "100%",
 
           padding: "10px",
 
@@ -242,7 +392,9 @@ export default function Sidebar({
           background: "#ffc420",
 
           color: "white",
-          fontWeight: 'bold',
+
+          fontWeight: "bold",
+
           cursor: "pointer",
         }}
       >
